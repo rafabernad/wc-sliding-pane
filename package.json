@@ -1,0 +1,14 @@
+{
+  "name": "sliding-pane",
+  "version": "1.0.0",
+  "description": "A web component which enables sliding pane navigation",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rafa Bernad <rafa.bernad@outlook.com>",
+  "license": "MIT",
+  "dependencies": {
+    "lit-element": "^2.0.1"
+  }
+}

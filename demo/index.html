@@ -1,0 +1,35 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sliding Pane Demo</title>
+    <script type="module" src="../src/index.js"></script>
+</head>
+<body>
+    <style>
+        .slot-one {
+            height: 500px;
+            background: rgb(255, 143, 143)
+        }
+        .slot-two {
+            height: 500px;
+            background: rgb(165, 255, 143)
+        }
+        .slot-three {
+            height: 500px;
+            background: rgb(143, 233, 255)
+        }
+    </style>
+    <h1>Sliding Pane demo</h1>
+    <sliding-pane>
+        <template name="one"><div class="slot-one">Slot One</div></template>
+        <template name="two"><div class="slot-two">Slot Two</div></template>
+        <template name="three"><div class="slot-three">Slot Three</div></template>
+    </sliding-pane>
+    <br/>
+    <button onclick="document.querySelector('sliding-pane').push('one')">Show One</button>
+    <button onclick="document.querySelector('sliding-pane').push('two')">Show Two</button>
+    <button onclick="document.querySelector('sliding-pane').push('three')">Show Three</button>
+</body>
+</html>
