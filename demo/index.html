@@ -4,32 +4,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Sliding Pane Demo</title>
-    <script type="module" src="../src/index.js"></script>
 </head>
 <body>
-    <style>
-        .slot-one {
-            height: 500px;
-            background: rgb(255, 143, 143)
+    <script type="module">
+        import '../src/index';
+        import { LitElement, html, css } from 'lit-element';
+
+        class Demo extends LitElement {
+            static get styles() {
+                return [
+                    css`.one {
+                        height: 500px;
+                        background: rgb(255, 143, 143)
+                    }`,
+                    css`.two {
+                        height: 500px;
+                        background: rgb(165, 255, 143)
+                    }`, 
+                    css`.three {
+                        height: 500px;
+                        background: rgb(143, 233, 255)
+                    }`
+                ]
+            }
+            static get properties() {
+                return {
+                    title: {type: String}
+                }
+            }      
+            render() {
+                return html`<h1>${this.title}</h1>
+                <sliding-panes>
+                    <sliding-pane name="one"><div class="one">Slot One</div></sliding-pane>
+                    <sliding-pane name="two"><div class="two">Slot Two</div></sliding-pane>
+                    <sliding-pane name="three"><div class="three">Slot Three</div></sliding-pane>
+                </sliding-panes>
+                <br/>
+                <button @click="${this.oneClicked}">Show One</button>
+                <button @click="${this.twoClicked}">Show Two</button>
+                <button @click="${this.threeClicked}">Show Three</button>`;
+            }
+            updateTwo(ev) {
+                console.log(ev)
+            }
+            oneClicked() {
+                console.log(this.shadowRoot.querySelector('sliding-panes'))
+                this.shadowRoot.querySelector('sliding-panes').push('one');
+            }
+            twoClicked() {
+                this.shadowRoot.querySelector('sliding-panes').push('two');
+            }
+            threeClicked() {
+                this.shadowRoot.querySelector('sliding-panes').push('three');
+            }
         }
-        .slot-two {
-            height: 500px;
-            background: rgb(165, 255, 143)
-        }
-        .slot-three {
-            height: 500px;
-            background: rgb(143, 233, 255)
-        }
-    </style>
-    <h1>Sliding Pane demo</h1>
-    <sliding-pane>
-        <template name="one"><div class="slot-one">Slot One</div></template>
-        <template name="two"><div class="slot-two">Slot Two</div></template>
-        <template name="three"><div class="slot-three">Slot Three</div></template>
-    </sliding-pane>
-    <br/>
-    <button onclick="document.querySelector('sliding-pane').push('one')">Show One</button>
-    <button onclick="document.querySelector('sliding-pane').push('two')">Show Two</button>
-    <button onclick="document.querySelector('sliding-pane').push('three')">Show Three</button>
+
+        customElements.define('demo-component', Demo);
+    </script>
+    <demo-component title="Sliding Pane demo"></demo-component>
 </body>
 </html>

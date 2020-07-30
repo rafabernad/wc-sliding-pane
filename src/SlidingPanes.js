@@ -2,6 +2,11 @@ import { LitElement, html, css } from 'lit-element';
 import './sliding-pane';
 
 export default class SlidingPanes extends LitElement {
+    static get properties() {
+        return {
+            default: String
+        }
+    }
     static get styles() {
         return [
             css`slot { display: block; position: relative; overflow-x: hidden; }`,
@@ -15,7 +20,7 @@ export default class SlidingPanes extends LitElement {
     constructor() {
         super();
         this.__activePanes = [];
-        this.push(this.children[0].getAttribute('name'));
+        this.initPanes(this.default || this.children[0].getAttribute('name'));
     }
     get activePane() {
         return this.activePanes[this.activePanes.length - 1];
@@ -48,38 +53,51 @@ export default class SlidingPanes extends LitElement {
             });
         }
     }
+    initPanes(initial) {
+        Array.from(this.children).forEach(child => {
+            if (child.getAttribute('name') === initial) {
+                this.__activePanes.push(child);
+                this.activePane.classList.add('active');
+            } else {
+                child.classList.add('inactive');
+                window.requestAnimationFrame(() => {
+                    child.style.transform = `translate3d(${this.getBoundingClientRect().width}px,0px,0px)`;
+                });
+            }
+        });
+    }
+    activatePane(name) {
+        this.activePane && this.activePane.classList.remove('active')
+        for (var i = 0; i < this.children.length; i++) {
+            if (this.children[i].getAttribute('name') === name) {
+                this.__activePanes.push(this.children[i]);
+                break;
+            }
+        }
+        this.activePane.classList.replace('inactive', 'activating');
+        window.requestAnimationFrame(() => {
+            setTimeout(() => {
+                this.activePane.style.transform = 'translate3d(0px,0px,0px)';
+            });
+        });
+    }
+    reactivatePane(name) {
+        this.__activePanes.length = this.activePaneNames.indexOf(name) + 1;
+        this.activePane.classList.replace('inactive', 'active');
+        window.requestAnimationFrame(() => Array.from(this.children).forEach(child => {
+            if (!this.__activePanes.includes(child)) {
+                child.classList.replace('active', 'deactivating');
+                child.style.transform = `translate3d(${this.getBoundingClientRect().width}px,0px,0px)`
+            }
+        }));
+    }
     push(name) {
-        debugger
         if (this.activePaneNames.pop() !== name) {
             if (this.activePaneNames.includes(name)) {
                 //  Pane already active; popping until it
-                this.__activePanes.length = this.activePaneNames.indexOf(name) + 1;
+                this.reactivatePane(name);
             } else {
-                debugger
-                this.activePane && this.activePane.classList.remove('active')
-                for (var i = 0; i < this.children.length; i++) {
-                    if (this.children[i].getAttribute('name') === name) {
-                        this.__activePanes.push(this.children[i]);
-                        break;
-                    }
-                }
-                this.activePane.classList.replace('inactive', 'activating');
-                window.requestAnimationFrame(() => {
-                    setTimeout(() => {
-                        this.activePane.style.transform = 'translate3d(0px,0px,0px)';
-                    });
-                });
-                if (this.__activePanes.length === 1) {
-                    this.__activePanes[0].classList.add('active');
-                    this.__activePanes[0].classList.remove('activating');
-                    window.requestAnimationFrame(() => Array.from(this.children).forEach(child => {
-                        if (!this.__activePanes.includes(child)) {
-                            debugger
-                            child.classList.add('inactive');
-                            child.style.transform = `translate3d(${this.getBoundingClientRect().width}px,0px,0px)`
-                        }
-                    }));
-                }
+                this.activatePane(name);
             }
         }
     }

@@ -1,3 +1,3 @@
-import SlidingPane from './SlidingPane';
+import SlidingPane from './SlidingPanes';
 
 customElements.define('sliding-panes', SlidingPane);
